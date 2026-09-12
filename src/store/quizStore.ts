@@ -1,3 +1,18 @@
+function acakPilihanSoal(q: Question) {
+  const n = q.options.id.length
+  if (n <= 1) return q
+  const perm = acakArr(Array.from({ length: n }, (_, i) => i))
+  const options = { id: perm.map((i) => q.options.id[i]), jawa: perm.map((i) => q.options.jawa[i]) }
+  return { ...q, options, answer: perm.indexOf(q.answer) }
+}
+function acakArr<T>(arr: T[]): T[] {
+  const a = [...arr]
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[a[i], a[j]] = [a[j], a[i]]
+  }
+  return a
+}
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
 import { QUESTIONS } from "../data/questions"
@@ -10,6 +25,11 @@ import type { CategoryId, HighScore, Language, Question, QuizResult } from "../t
 export const SECOND_PER_QUESTION = window.__jawaConstants.DURASI_SABEN_PITAKON
 const QUESTIONS_PER_QUIZ = window.__jawaConstants.SKOR_PAKET
 const MAX_HIGH_SCORES = window.__jawaConstants.MAX_SKOR_SKOR
+
+interface UserInfo {
+  name: string
+  email: string
+}
 
 interface QuizState {
   language: Language
@@ -25,6 +45,8 @@ interface QuizState {
   currentStart: number
 
   highScores: HighScore[]
+  user: UserInfo | null
+  hasOnboarded: boolean
 
   setLanguage: (lang: Language) => void
   toggleCategory: (cat: CategoryId) => void
@@ -38,6 +60,9 @@ interface QuizState {
   resetQuiz: () => void
 
   continueWithLang: (lang: Language) => void
+  login: (name: string, email: string) => void
+  logout: () => void
+  completeOnboarding: () => void
 }
 
 export const useQuizStore = create<QuizState>()(
@@ -56,6 +81,8 @@ export const useQuizStore = create<QuizState>()(
       currentStart: 0,
 
       highScores: [],
+      user: null,
+      hasOnboarded: false,
 
       setLanguage: (lang) => set({ language: lang }),
 
@@ -74,6 +101,10 @@ export const useQuizStore = create<QuizState>()(
         get().setLanguage(lang)
       },
 
+      login: (name, email) => set({ user: { name, email } }),
+      logout: () => set({ user: null }),
+      completeOnboarding: () => set({ hasOnboarded: true }),
+
       startQuiz: (categories) =>
         set((s) => {
           const pool = window.__jawaQuiz.pilihSoal(
@@ -84,7 +115,7 @@ export const useQuizStore = create<QuizState>()(
           )
           return {
             quizRunning: true,
-            questions: pool,
+            questions: pool.map(acakPilihanSoal),
             currentIndex: 0,
             answers: [],
             startTime: Date.now(),
@@ -157,6 +188,8 @@ export const useQuizStore = create<QuizState>()(
       partialize: (s) => ({
         language: s.language,
         highScores: s.highScores,
+        user: s.user,
+        hasOnboarded: s.hasOnboarded,
       }),
     },
   ),
