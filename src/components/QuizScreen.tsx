@@ -4,7 +4,7 @@ import { localize, t } from "../i18n/translations"
 import { useTimer } from "../hooks/useTimer"
 import { CATEGORIES } from "../data/questions"
 import type { QuizResult } from "../types"
-import { CheckCircle2, XCircle, Clock } from "lucide-react"
+import { ChevronRight, Check, Clock, AlertTriangle, SkipForward } from "lucide-react"
 
 interface Props {
   onFinish: (result: QuizResult) => void
@@ -51,8 +51,21 @@ export function QuizScreen({ onFinish }: Props) {
   const handleSelect = (optIdx: number) => {
     if (submitted) return
     setSelected(optIdx)
+  }
+
+  const handleVerify = () => {
+    if (selected === null) return
     setSubmitted(true)
-    answer(optIdx)
+    answer(selected)
+  }
+
+  const goNext = () => {
+    if (isLast) {
+      const r = finishQuiz()
+      if (r) onFinish(r)
+    } else {
+      nextQuestion()
+    }
   }
 
   useEffect(() => {
@@ -62,110 +75,191 @@ export function QuizScreen({ onFinish }: Props) {
     setSelected(ans !== undefined && ans !== -1 ? ans : null)
   }, [currentIndex, answered, answers])
 
-  const handleNext = () => {
-    if (isLast) {
-      const r = finishQuiz()
-      if (r) onFinish(r)
-    } else {
-      nextQuestion()
-    }
-  }
-
   if (!question) return null
 
-  const optionLabel = (i: number) => window.__jawaFormat.labelOpsi(i)
-  const bgBar =
-    ((currentIndex + (submitted ? 1 : 0)) / questions.length) * 100
+  const progress = ((currentIndex + (submitted ? 1 : 0)) / questions.length) * 100
+  const optLetters = ["A", "B", "C", "D"]
 
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-md flex-col px-5 py-6">
+    <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col px-5 pt-6 pb-10">
+      {/* Header */}
       <header className="flex items-center justify-between">
-        <div className="flex items-center gap-2 text-sm font-semibold text-batik/60">
-          <span>{category.icon}</span>
-          <span>{language === "jawa" ? category.question.jawa : category.question.id}</span>
-        </div>
-        <div
-          className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-bold ${
-            remaining <= 5 ? "bg-red-100 text-red-600 animate-pulse" : "bg-gold/20 text-gold-dark"
-          }`}
+        <button
+          onClick={goNext}
+          className="flex h-10 w-10 items-center justify-center"
+          style={{
+            borderRadius: "var(--radius-md)",
+            background: "var(--color-cream-dark)",
+            border: "none",
+            cursor: "pointer",
+          }}
         >
-          <Clock size={14} />
-          {window.__jawaFormat.labelWktu(remaining)}
-        </div>
+          <SkipForward size={18} style={{ color: "var(--color-brown)" }} />
+        </button>
+
+        <h1 className="text-lg font-extrabold" style={{ color: "var(--color-brown)" }}>
+          {language === "jawa" ? category.question.jawa : category.question.id}
+        </h1>
+
+        <button
+          onClick={goNext}
+          className="text-sm font-bold"
+          style={{ color: "var(--color-orange)", background: "none", border: "none", cursor: "pointer" }}
+        >
+          {t(language, "next")}
+        </button>
       </header>
 
-      <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-batik/10">
+      {/* Progress bar */}
+      <div className="mt-4 flex items-center gap-3">
+        <span className="text-sm font-bold" style={{ color: "var(--color-brown)" }}>
+          {currentIndex + 1}/{questions.length}
+        </span>
         <div
-          className="h-full rounded-full bg-gradient-to-r from-gold to-gold-dark transition-all duration-500"
-          style={{ width: `${bgBar}%` }}
-        />
+          className="flex-1 h-3 overflow-hidden"
+          style={{ borderRadius: "var(--radius-full)", background: "var(--color-beige)" }}
+        >
+          <div
+            style={{
+              height: "100%",
+              borderRadius: "var(--radius-full)",
+              background: "linear-gradient(90deg, var(--color-green) 0%, var(--color-green-deep) 100%)",
+              width: `${progress}%`,
+              transition: "width 0.5s ease",
+            }}
+          />
+        </div>
       </div>
-      <p className="mt-1.5 text-right text-xs text-batik/50">
-        {t(language, "questionLabel")} {currentIndex + 1} {t(language, "of")}{" "}
-        {questions.length}
-      </p>
 
-      <h1 className="mt-5 font-display text-xl font-bold leading-relaxed text-batik">
+      {/* Timer */}
+      <div
+        className="mt-3 flex items-center gap-1.5 self-end rounded-full px-3 py-1"
+        style={{
+          background: remaining <= 5 ? "var(--color-red-pale)" : "var(--color-orange-pale)",
+          color: remaining <= 5 ? "var(--color-red)" : "var(--color-orange-deep)",
+        }}
+      >
+        <Clock size={13} />
+        <span className="text-xs font-bold">{window.__jawaFormat.labelWktu(remaining)}</span>
+      </div>
+
+      {/* Question */}
+      <h2
+        className="mt-6 text-[22px] font-extrabold leading-snug"
+        style={{ color: "var(--color-brown)" }}
+      >
         {questionText}
-      </h1>
+      </h2>
 
-      <div className="mt-5 flex flex-col gap-3">
+      {/* Options */}
+      <div className="mt-6 flex flex-col gap-3">
         {optionTexts.map((opt, i) => {
           const isSelected = selected === i
           const isCorrect = i === question.answer
           const showState = submitted
+
+          let bg = "var(--color-orange)"
+          let textColor = "white"
+          let borderColor = "transparent"
+          let icon: "none" | "check" | "chevron" = "chevron"
+
+          if (showState) {
+            if (isCorrect) {
+              bg = "var(--color-green)"
+              textColor = "white"
+              icon = "check"
+            } else if (isSelected) {
+              bg = "var(--color-red)"
+              textColor = "white"
+              icon = "chevron"
+            } else {
+              bg = "var(--color-orange-light)"
+              textColor = "white"
+              icon = "chevron"
+            }
+          } else if (isSelected) {
+            bg = "var(--color-green)"
+            textColor = "white"
+            icon = "check"
+          }
+
           return (
             <button
               key={i}
               onClick={() => handleSelect(i)}
               disabled={submitted}
-              className={`card flex items-center gap-3 text-left font-medium transition-all ${
-                showState
-                  ? isCorrect
-                    ? "border-emerald-400 bg-emerald-50 text-emerald-700"
-                    : isSelected
-                      ? "border-red-400 bg-red-50 text-red-600"
-                      : "opacity-50"
-                  : "hover:border-gold hover:bg-cream hover:shadow-md"
-              }`}
+              className="flex items-center gap-4 text-left transition-all duration-200"
+              style={{
+                borderRadius: "var(--radius-lg)",
+                background: bg,
+                border: `2px solid ${borderColor}`,
+                padding: "16px 18px",
+                color: textColor,
+                boxShadow: showState && isCorrect
+                  ? "0 4px 16px rgba(92, 184, 122, 0.3)"
+                  : isSelected && !showState
+                    ? "0 4px 16px rgba(92, 184, 122, 0.3)"
+                    : "0 3px 12px rgba(232, 132, 74, 0.2)",
+                cursor: submitted ? "default" : "pointer",
+                opacity: showState && !isCorrect && !isSelected ? 0.6 : 1,
+              }}
             >
+              {/* Option letter */}
               <span
-                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-sm font-bold ${
-                  showState
-                    ? isCorrect
-                      ? "bg-emerald-500 text-white"
-                      : isSelected
-                        ? "bg-red-500 text-white"
-                        : "bg-batik/10 text-batik/50"
-                    : "bg-gold/20 text-gold-dark"
-                }`}
+                className="flex h-8 w-8 shrink-0 items-center justify-center text-sm font-bold"
+                style={{
+                  borderRadius: "var(--radius-sm)",
+                  background: "rgba(255,255,255,0.25)",
+                }}
               >
-                {optionLabel(i)}
+                {optLetters[i]}
               </span>
-              <span className="flex-1">{opt}</span>
-              {showState && isCorrect && <CheckCircle2 size={20} className="text-emerald-500" />}
-              {showState && isSelected && !isCorrect && (
-                <XCircle size={20} className="text-red-500" />
+              <span className="flex-1 text-[16px] font-bold">{opt}</span>
+              {icon === "check" && (
+                <div
+                  className="flex h-7 w-7 shrink-0 items-center justify-center"
+                  style={{ borderRadius: "50%", background: "rgba(255,255,255,0.3)" }}
+                >
+                  <Check size={16} color="white" strokeWidth={3} />
+                </div>
+              )}
+              {icon === "chevron" && (
+                <ChevronRight size={20} style={{ color: "rgba(255,255,255,0.7)" }} />
               )}
             </button>
           )
         })}
       </div>
 
+      {/* Time up */}
       {isTimeUp && (
-        <div className="card mt-4 border-amber-300 bg-amber-50 text-center text-sm font-semibold text-amber-700">
-          {t(language, "timeUp")}
-          <span className="block text-xs font-normal text-amber-600/80">
-            {t(language, "timeUpSub")}
-          </span>
+        <div
+          className="mt-4 flex items-center justify-center gap-2 rounded-2xl py-3.5 text-center text-sm font-semibold"
+          style={{ background: "var(--color-amber-pale)", color: "var(--color-amber)", border: "1px solid var(--color-amber-light)" }}
+        >
+          <AlertTriangle size={16} />
+          <div>
+            {t(language, "timeUp")}
+            <span className="ml-1 text-xs font-normal opacity-70">
+              {t(language, "timeUpSub")}
+            </span>
+          </div>
         </div>
       )}
 
-      {submitted && (
-        <button onClick={handleNext} className="btn-primary mt-5 w-full py-3.5 text-lg">
-          {isLast ? t(language, "result") + " →" : t(language, "next")}
-        </button>
-      )}
+      {/* Verify / Next */}
+      <div className="mt-auto pt-4">
+        {selected !== null && !submitted && (
+          <button onClick={handleVerify} className="btn-primary w-full py-4 text-lg">
+            {t(language, "verifyAnswer")}
+          </button>
+        )}
+        {submitted && (
+          <button onClick={goNext} className="btn-primary w-full py-4 text-lg">
+            {isLast ? t(language, "result") + " →" : t(language, "next")}
+          </button>
+        )}
+      </div>
     </div>
   )
 }
