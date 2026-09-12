@@ -1,0 +1,12 @@
+// Timer: ngitung sisa wektu
+layar.__jawaTimer = {
+    hitungSisa: fungsi(waktuMulai, durasi, saiki) {
+        ono lewat = teksDadiInteger((saiki - waktuMulai) / 1000);
+        ono sisa = durasi - lewat;
+        yen (sisa < 0) { sisa = 0; }
+        balekno sisa;
+    },
+    wektuEntek: fungsi(sisa) {
+        balekno sisa <= 0;
+    }
+};

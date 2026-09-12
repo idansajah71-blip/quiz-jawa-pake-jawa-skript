@@ -1,0 +1,7 @@
+// Informasi kategori pitakon
+layar.__jawaCategories = {
+    kosakata: { id: "kosakata", icon: "📖", question: { id: "Kosakata", jawa: "Tembung" } },
+    ungkapan: { id: "ungkapan", icon: "💬", question: { id: "Ungkapan & Peribahasa", jawa: "Saloka & Paribasan" } },
+    budaya: { id: "budaya", icon: "🏮", question: { id: "Budaya Jawa", jawa: "Budaya Jawa" } },
+    angka: { id: "angka", icon: "🔢", question: { id: "Angka", jawa: "Wilangan" } }
+};

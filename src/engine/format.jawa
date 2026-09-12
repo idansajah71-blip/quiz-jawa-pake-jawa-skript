@@ -1,0 +1,25 @@
+// Mesin format tampilan
+layar.__jawaFormat = {
+    persentase: fungsi(nilai) {
+        balekno nilai + "%";
+    },
+    labelOpsi: fungsi(indeks) {
+        balekno String.fromCharCode(65 + indeks);
+    },
+    nomorSoal: fungsi(skrine, total) {
+        balekno skrine + "/" + total;
+    },
+    skorAkhir: fungsi(jumlahBener, total) {
+        balekno jumlahBener + "/" + total;
+    },
+    judulKategori: fungsi(kategori, lang) {
+        yen (lang === "jawa") { balekno kategori.label.jawa; }
+        balekno kategori.label.id;
+    },
+    labelWktu: fungsi(sisa) {
+        balekno sisa + "s";
+    },
+    formatUrutan: fungsi(nomor) {
+        balekno "#" + nomor;
+    }
+};

@@ -1,0 +1,1 @@
+export function translate(code: string): string

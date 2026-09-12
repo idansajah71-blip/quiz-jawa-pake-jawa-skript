@@ -1,0 +1,53 @@
+// Mesin quiz: ngacak, milih soal, ngitung wangsulan bener
+layar.__jawaQuiz = {
+    acak: fungsi(arr) {
+        ono result = [];
+        ono i = arr.length - 1;
+        nganti (i >= 0) {
+            ono j = teksDadiInteger(Math.floor(Math.random() * (i + 1)));
+            result.push(arr[j]);
+            arr[j] = arr[i];
+            i = i - 1;
+        }
+        balekno result;
+    },
+    pilihSoal: fungsi(semua, kategori, jumlah, kuduAcak) {
+        ono pool = [];
+        ono k = 0;
+        ono total = semua.length;
+        nganti (k < total) {
+            ono soal = semua[k];
+            ono c = 0;
+            ono jumlahKategori = kategori.length;
+            ono ketemu = salah;
+            nganti (c < jumlahKategori) {
+                yen (soal.category === kategori[c]) { ketemu = bener; }
+                c = c + 1;
+            }
+            yen (ketemu) { pool.push(soal); }
+            k = k + 1;
+        }
+        ono pilihan = pool;
+        yen (kuduAcak) {
+            pilihan = layar.__jawaQuiz.acak(pool);
+        }
+        ono hasil = [];
+        ono x = 0;
+        yen (jumlah > pilihan.length) { jumlah = pilihan.length; }
+        nganti (x < jumlah) {
+            hasil.push(pilihan[x]);
+            x = x + 1;
+        }
+        balekno hasil;
+    },
+    itungBener: fungsi(daftarSoal, daftarJawaban) {
+        ono jumlahBener = 0;
+        ono i = 0;
+        ono total = daftarSoal.length;
+        nganti (i < total) {
+            yen (daftarJawaban[i] === daftarSoal[i].answer) { jumlahBener = jumlahBener + 1; }
+            i = i + 1;
+        }
+        balekno jumlahBener;
+    }
+};

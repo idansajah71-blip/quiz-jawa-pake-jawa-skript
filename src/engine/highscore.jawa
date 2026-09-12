@@ -1,0 +1,19 @@
+// Papan skor: ngurutno lan nyimpen rekor paling dhuwur
+layar.__jawaHighscore = {
+    tambahSkor: fungsi(daftar, entri) {
+        daftar.push(entri);
+        daftar.sort(fungsi(a, b) {
+            yen (b.score !== a.score) { balekno b.score - a.score; }
+            yen (b.accuracy !== a.accuracy) { balekno b.accuracy - a.accuracy; }
+            balekno a.time - b.time;
+        });
+        yen (daftar.length > 10) {
+            daftar.length = 10;
+        }
+        balekno daftar;
+    },
+    formatTanggal: fungsi(ms) {
+        ono d = anyar Date(ms);
+        balekno d.toLocaleDateString("id-ID");
+    }
+};

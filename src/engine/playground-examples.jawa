@@ -1,0 +1,15 @@
+// Contoh kode kanggo JawaScript playground
+layar.__jawaPlayground = {
+    contoDhasar: 'ono x = 10;\nono y = 20;\n\ntampilno(x + y);\n\nyen (x < y) {\n    tampilno("x luwih cilik");\n} ora {\n    tampilno("x luwih gedhe");\n}',
+    contoKelas: 'kelas Kethek {\n    constructor(jeneng) {\n        iki.jeneng = jeneng;\n    }\n\n    mangan(kg) {\n        tampilno(iki.jeneng + " mangan " + kg + " kg");\n    }\n}\n\nono si = anyar Kethek("Kiki");\nsi.mangan(2);',
+    contoAsync: 'sambil fungsi ambilData() {\n    ono res = enteni kirim("https://jsonplaceholder.typicode.com/todos/1");\n    ono data = enteni res.json();\n    tampilno(data);\n}\n\nambilData();',
+    contoSwitch: 'ono dina = "Senin";\n\nmilih (dina) {\n    kasus "Senin":\n        tampilno("Iki Senin");\n        mandheg;\n    kasus "Selasa":\n        tampilno("Iki Selasa");\n        mandheg;\n    asale:\n        tampilno("Dina liya");\n}',
+    daftarConto: fungsi() {
+        balekno [
+            { name: "Dasar", code: layar.__jawaPlayground.contoDhasar },
+            { name: "Kelas", code: layar.__jawaPlayground.contoKelas },
+            { name: "Async", code: layar.__jawaPlayground.contoAsync },
+            { name: "Switch", code: layar.__jawaPlayground.contoSwitch }
+        ];
+    }
+};

@@ -1,0 +1,15 @@
+// Konstanta aplikasi quiz
+layar.__jawaConstants = {
+    DURASI_SABEN_PITAKON: 30,
+    MAX_SKOR_SKOR: 10,
+    SKOR_PAKET: 10,
+    CATEGORY_IDS: ["kosakata", "ungkapan", "budaya", "angka"],
+    OPSI_LABEL: ["A", "B", "C", "D", "E"],
+    VARIAN_WARNA: ["emerald", "amber", "red", "blue"],
+    GRADE_WARNA: {
+        A: "from-emerald-400 to-emerald-500",
+        B: "from-gold to-gold-dark",
+        C: "from-amber-400 to-orange-400",
+        D: "from-red-400 to-red-500"
+    }
+};

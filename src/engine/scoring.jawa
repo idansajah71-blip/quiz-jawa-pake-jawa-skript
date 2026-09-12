@@ -1,0 +1,38 @@
+// Mesin skor, kabar nilai, lan wektu
+layar.__jawaScoring = {
+    hitungAkurasi: fungsi(jumlahBener, jumlahTotal) {
+        yen (jumlahTotal === 0) { balekno 0; }
+        ono persen = (jumlahBener / jumlahTotal) * 100;
+        balekno teksDadiInteger(Math.round(persen));
+    },
+    formatWaktu: fungsi(detik) {
+        ono menit = teksDadiInteger(detik / 60);
+        ono detikSisa = detik % 60;
+        yen (menit > 0) {
+            balekno menit + " menit " + detikSisa + "s";
+        }
+        balekno detikSisa + "s";
+    },
+    nilaiPesan: fungsi(akurasi, lang) {
+        yen (akurasi === 100) {
+            yen (lang === "jawa") { balekno "Sampurna! Kuwe pancen koentji!"; }
+            balekno "Sempurna! Kamu memang kuncinya!";
+        }
+        yen (akurasi >= 70) {
+            yen (lang === "jawa") { balekno "Pinter banget, kuwe jagoan basa Jawa!"; }
+            balekno "Mantap, kamu jagoan basa Jawa!";
+        }
+        yen (akurasi >= 40) {
+            yen (lang === "jawa") { balekno "Apik-apik wae! Terus latihan."; }
+            balekno "Lumayan! Terus berlatih ya.";
+        }
+        yen (lang === "jawa") { balekno "Aja nyerah, coba maneh!"; }
+        balekno "Jangan menyerah, ayo coba lagi!";
+    },
+    golGrade: fungsi(akurasi) {
+        yen (akurasi >= 90) { balekno "A"; }
+        yen (akurasi >= 75) { balekno "B"; }
+        yen (akurasi >= 60) { balekno "C"; }
+        balekno "D";
+    }
+};

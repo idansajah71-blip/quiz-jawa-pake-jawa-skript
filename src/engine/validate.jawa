@@ -1,0 +1,40 @@
+// Mesin validasi lan review jawaban
+layar.__jawaValidate = {
+    tipeJawaban: fungsi(jawaban) {
+        yen (jawaban === -1) { balekno "timeout"; }
+        yen (jawaban === undefined) { balekno "kosong"; }
+        balekno "wangsulan";
+    },
+    apakahBener: fungsi(jawaban, kunciJawaban) {
+        balekno jawaban === kunciJawaban;
+    },
+    gaweRingkesan: fungsi(daftarSoal, daftarJawaban) {
+        ono ringkasan = [];
+        ono i = 0;
+        ono total = daftarSoal.length;
+        nganti (i < total) {
+            ono soal = daftarSoal[i];
+            ono jawaban = daftarJawaban[i];
+            ono tipe = layar.__jawaValidate.tipeJawaban(jawaban);
+            ono wangsulanBener = jawaban === soal.answer;
+            ringkasan.push({ indeks: i, benar: wangsulanBener, tipe: tipe, jawabanSoal: soal, jawabanUser: jawaban });
+            i = i + 1;
+        }
+        balekno ringkasan;
+    },
+    labelOpsi: fungsi(indeks) {
+        balekno layar.__jawaConstants.OPSI_LABEL[indeks];
+    },
+    labelStatus: fungsi(eskor, tipe, lang) {
+        yen (tipe === "timeout") {
+            yen (lang === "jawa") { balekno "Wektune entek"; }
+            balekno "Waktu habis";
+        }
+        yen (eskor) {
+            yen (lang === "jawa") { balekno "Bener!"; }
+            balekno "Benar!";
+        }
+        yen (lang === "jawa") { balekno "Salah"; }
+        balekno "Salah";
+    }
+};
