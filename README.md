@@ -238,19 +238,91 @@ const grade = window.__jawaScoring.golGrade(95)  // "A"
 
 ## Getting Started
 
+### Prerequisites
+
+- **Node.js** v18 atau lebih baru ([download](https://nodejs.org/))
+- **npm** (sudah include dengan Node.js)
+
+Cek versi Node.js kamu:
+
 ```bash
+node --version  # minimal v18.x
+npm --version
+```
+
+### Clone & Install
+
+```bash
+# Clone repository
+git clone https://github.com/idansajah71-blip/quiz-jawa-pake-jawa-skript.git
+
+# Masuk ke folder project
+cd quiz-jawa-pake-jawa-skript
+
 # Install dependencies
 npm install
+```
 
-# Jalankan dev server (port 4001)
+### Jalankan Development Server
+
+```bash
 npm run dev
+```
 
-# Build untuk production
+Buka browser dan akses:
+
+```
+http://localhost:4001
+```
+
+Dev server mendukung **Hot Module Replacement (HMR)** — setiap perubahan di file `.ts`, `.tsx`, atau `.jawa` akan langsung ter-reload di browser tanpa restart.
+
+### Build untuk Production
+
+```bash
+# Build optimized untuk deploy
 npm run build
 
-# Preview build
+# Preview hasil build secara lokal
 npm run preview
 ```
+
+Output build ada di folder `dist/`, siap di-deploy ke Vercel, Netlify, atau hosting lainnya.
+
+### Available Scripts
+
+| Command | Fungsi |
+|---------|--------|
+| `npm run dev` | Jalankan dev server (port 4001) |
+| `npm run build` | Build untuk production (TypeScript + Vite) |
+| `npm run preview` | Preview hasil build |
+| `npm run lint` | Jalankan oxlint untuk cek kode |
+
+### Cara Pakai Aplikasi
+
+1. **Onboarding** — Saat pertama kali buka, akan muncul 4 layar penjelasan tentang JawaScript dan fitur aplikasi. Klik **Lanjut** atau **Lewati**.
+
+2. **Pilih Bahasa** — Di beranda, klik tombol globe (🌐) untuk switch antara Bahasa Indonesia dan Bahasa Jawa.
+
+3. **Mulai Quiz** — Klik **Mulai** di beranda, lalu:
+   - Pilih kategori (Kosakata, Ungkapan & Peribahasa, Budaya Jawa, Angka)
+   - Atur jumlah soal (5 / 10 / 15)
+   - Aktifkan/Nonaktifkan acak soal
+   - Klik **Mulai!**
+
+4. **Jawab Soal** — Pilih salah satu opsi jawaban (A/B/C/D), lalu klik **Verifikasi Jawaban** untuk mengecek. Klik **Lanjut** untuk soal berikutnya.
+
+5. **Lihat Hasil** — Setelah selesai, kamu akan melihat:
+   - Skor dan grade (A/B/C/D)
+   - Akurasi jawaban
+   - Waktu pengerjaan
+   - Tab **Pembahasan** untuk melihat semua jawaban
+
+6. **Cek Profil** — Lihat statistik lengkap, pencapaian (achievements), dan riwayat quiz.
+
+7. **Lihat Peringkat** — Cek podium top-3 dan ranking berdasarkan XP. Filter per minggu, bulan, atau sepanjang masa.
+
+8. **Login (Opsional)** — Login untuk menyimpan progres secara persisten.
 
 ## Struktur Project
 
@@ -275,6 +347,48 @@ src/
 ├── i18n/                   # Translasi bilingual
 └── plugins/                # Vite plugin (.jawa transpiler)
 ```
+
+## Troubleshooting
+
+### Port 4001 sudah dipakai
+
+```bash
+# Cari process yang pakai port 4001
+netstat -ano | findstr :4001
+
+# Matikan process (ganti PID dengan angka yang muncul)
+taskkill /PID <PID> /F
+```
+
+### Error "Cannot find module '.jawa'"
+
+Pastikan `tsconfig.app.json` punya `"allowArbitraryExtensions": true` di `compilerOptions`.
+
+### Dev server lambat / error
+
+```bash
+# Hapus node_modules dan install ulang
+Remove-Item -Recurse -Force node_modules
+Remove-Item package-lock.json
+npm install
+```
+
+### Build error TypeScript
+
+```bash
+# Clear cache TypeScript
+Remove-Item -Recurse -Force dist
+npm run build
+```
+
+## Browser Support
+
+| Browser | Status |
+|---------|--------|
+| Chrome 90+ | ✓ Supported |
+| Firefox 90+ | ✓ Supported |
+| Safari 15+ | ✓ Supported |
+| Edge 90+ | ✓ Supported |
 
 ## License
 
